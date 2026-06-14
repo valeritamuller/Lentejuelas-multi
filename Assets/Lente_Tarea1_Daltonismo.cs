@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 using TMPro;
 
 public class LensOption : MonoBehaviour
@@ -26,49 +26,86 @@ public class LensOption : MonoBehaviour
     [Header("Sonidos")]
     public AudioClip correctSound;
     public AudioClip wrongSound;
-    private AudioSource audioSource;
 
-    private static bool canChoose = true;
+    private AudioSource audioSource;
+    private bool canChoose = true;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+
+        if (correctMessage != null)
+            correctMessage.SetActive(false);
+
+        if (wrongMessage != null)
+            wrongMessage.SetActive(false);
+
+        if (countdownText != null)
+            countdownText.text = "";
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("TOQUE: " + gameObject.name);
+
         if (!other.CompareTag("Player"))
+        {
+            Debug.Log("NO ES PLAYER -> " + other.name);
             return;
+        }
 
         if (!canChoose)
+        {
+            Debug.Log("BLOQUEADO -> " + gameObject.name);
             return;
+        }
 
         if (isCorrectOption)
+        {
+            Debug.Log("CORRECTA -> " + gameObject.name);
             CorrectChoice();
+        }
         else
+        {
+            Debug.Log("INCORRECTA -> " + gameObject.name);
             StartCoroutine(WrongChoice());
+        }
     }
 
     private void CorrectChoice()
     {
         canChoose = false;
 
-        if (correctSound != null)
+        if (wrongMessage != null)
+            wrongMessage.SetActive(false);
+
+        if (countdownText != null)
+            countdownText.text = "";
+
+        if (audioSource != null && correctSound != null)
             audioSource.PlayOneShot(correctSound);
 
         if (correctMessage != null)
             correctMessage.SetActive(true);
 
-        auto1Renderer.material = auto1CorrectMaterial;
-        auto2Renderer.material = auto2CorrectMaterial;
-        auto3Renderer.material = auto3CorrectMaterial;
+        if (auto1Renderer != null && auto1CorrectMaterial != null)
+            auto1Renderer.material = auto1CorrectMaterial;
+
+        if (auto2Renderer != null && auto2CorrectMaterial != null)
+            auto2Renderer.material = auto2CorrectMaterial;
+
+        if (auto3Renderer != null && auto3CorrectMaterial != null)
+            auto3Renderer.material = auto3CorrectMaterial;
     }
 
     private IEnumerator WrongChoice()
     {
         canChoose = false;
 
-        if (wrongSound != null)
+        if (correctMessage != null)
+            correctMessage.SetActive(false);
+
+        if (audioSource != null && wrongSound != null)
             audioSource.PlayOneShot(wrongSound);
 
         if (wrongMessage != null)
