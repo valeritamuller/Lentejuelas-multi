@@ -1,22 +1,19 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 
-public class LensOption : MonoBehaviour
+public class LensOptionMacular : MonoBehaviour
 {
     [Header("Configuracion")]
     public bool isCorrectOption;
 
-    [Header("Autos")]
-    public Renderer auto1Renderer;
-    public Renderer auto2Renderer;
-    public Renderer auto3Renderer;
+    [Header("Mancha Macular")]
+    public GameObject manchaMacular;
 
-    public Material auto1CorrectMaterial;
-    public Material auto2CorrectMaterial;
-    public Material auto3CorrectMaterial;
+    [Header("Zona de activacion")]
+    public Transform jugador;
+    public Transform zonaTarea;
+    public float distanciaActivacion = 10f;
 
     [Header("Mensajes")]
     public GameObject wrongMessage;
@@ -29,13 +26,9 @@ public class LensOption : MonoBehaviour
     public AudioClip correctSound;
     public AudioClip wrongSound;
 
-    [Header("Post Processing")]
-    public Volume globalVolume;
-
     private AudioSource audioSource;
     private bool canChoose = true;
-    private ColorAdjustments colorAdj;
-    private WhiteBalance whiteBalance;
+    private bool manchaActivada = false;
 
     private void Awake()
     {
@@ -50,10 +43,23 @@ public class LensOption : MonoBehaviour
         if (countdownText != null)
             countdownText.text = "";
 
-        if (globalVolume != null)
+        // Mancha desactivada al inicio
+        if (manchaMacular != null)
+            manchaMacular.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (manchaActivada) return;
+        if (jugador == null || zonaTarea == null) return;
+
+        float distancia = Vector3.Distance(jugador.position, zonaTarea.position);
+
+        if (distancia < distanciaActivacion)
         {
-            globalVolume.profile.TryGet(out colorAdj);
-            globalVolume.profile.TryGet(out whiteBalance);
+            manchaActivada = true;
+            if (manchaMacular != null)
+                manchaMacular.SetActive(true);
         }
     }
 
@@ -84,23 +90,9 @@ public class LensOption : MonoBehaviour
         if (correctMessage != null)
             correctMessage.SetActive(true);
 
-        if (auto1Renderer != null && auto1CorrectMaterial != null)
-            auto1Renderer.material = auto1CorrectMaterial;
-
-        if (auto2Renderer != null && auto2CorrectMaterial != null)
-            auto2Renderer.material = auto2CorrectMaterial;
-
-        if (auto3Renderer != null && auto3CorrectMaterial != null)
-            auto3Renderer.material = auto3CorrectMaterial;
-
-        // Quitar efecto de daltonismo
-        if (colorAdj != null)
-        {
-            colorAdj.saturation.value = 0f;
-            colorAdj.hueShift.value = 0f;
-        }
-        if (whiteBalance != null)
-            whiteBalance.temperature.value = 0f;
+        // Desaparece la mancha
+        if (manchaMacular != null)
+            manchaMacular.SetActive(false);
     }
 
     private IEnumerator WrongChoice()
