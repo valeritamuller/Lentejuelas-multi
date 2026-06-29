@@ -1,20 +1,16 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
-public class Tarea4 : MonoBehaviour
+public class Lente_tarea4 : MonoBehaviour
 {
     [Header("Configuracion")]
     public bool isCorrectOption;
 
-    [Header("Bondis")]
-    public Renderer Bondi1Renderer;
-    public Renderer Bondi2Renderer;
-    public Renderer Bondi3Renderer;
-
-    public Material Bondi1CorrectMaterial;
-    public Material Bondi2CorrectMaterial;
-    public Material Bondi3CorrectMaterial;
+    [Header("Post Processing")]
+    public Volume globalVolume;
 
     [Header("Mensajes")]
     public GameObject wrongMessage;
@@ -28,15 +24,12 @@ public class Tarea4 : MonoBehaviour
     public AudioClip wrongSound;
 
     private AudioSource audioSource;
-    private Collider myCollider;
-
-    private static bool canChoose = true;
-    private static bool alreadyCorrect = false;
+    private bool canChoose = true;
+    private Bloom bloom;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        myCollider = GetComponent<Collider>();
 
         if (correctMessage != null)
             correctMessage.SetActive(false);
@@ -46,30 +39,17 @@ public class Tarea4 : MonoBehaviour
 
         if (countdownText != null)
             countdownText.text = "";
+
+        if (globalVolume != null)
+            globalVolume.profile.TryGet(out bloom);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("----- TRIGGER -----");
-        Debug.Log("Opción activada: " + gameObject.name);
-        Debug.Log("Collider que entró: " + other.name);
-        Debug.Log("Tag del que entró: " + other.tag);
-        Debug.Log("Posición opción: " + transform.position);
+        Debug.Log("LENTE TOCADO: " + gameObject.name + " por: " + other.name + " tag: " + other.tag);
 
-        if (myCollider != null)
-            Debug.Log("Centro del collider opción: " + myCollider.bounds.center + " / Tamaño: " + myCollider.bounds.size);
-
-        Debug.Log("Posición del que entró: " + other.transform.position);
-        Debug.Log("-------------------");
-
-        if (!other.CompareTag("MainCamera"))
-            return;
-
-        if (!canChoose || alreadyCorrect)
-        {
-            Debug.Log("BLOQUEADO -> " + gameObject.name);
-            return;
-        }
+        if (!other.CompareTag("MainCamera")) return;
+        if (!canChoose) return;
 
         if (isCorrectOption)
             CorrectChoice();
@@ -80,7 +60,6 @@ public class Tarea4 : MonoBehaviour
     private void CorrectChoice()
     {
         canChoose = false;
-        alreadyCorrect = true;
 
         if (wrongMessage != null)
             wrongMessage.SetActive(false);
@@ -94,16 +73,13 @@ public class Tarea4 : MonoBehaviour
         if (correctMessage != null)
             correctMessage.SetActive(true);
 
-        if (Bondi1Renderer != null && Bondi1CorrectMaterial != null)
-            Bondi1Renderer.material = Bondi1CorrectMaterial;
+        if (bloom != null)
+        {
+            bloom.active = false;
+            bloom.intensity.value = 0f;
+        }
 
-        if (Bondi2Renderer != null && Bondi2CorrectMaterial != null)
-            Bondi2Renderer.material = Bondi2CorrectMaterial;
-
-        if (Bondi3Renderer != null && Bondi3CorrectMaterial != null)
-            Bondi3Renderer.material = Bondi3CorrectMaterial;
-
-        Debug.Log("CORRECTA -> " + gameObject.name);
+        Debug.Log("CORRECTO");
     }
 
     private IEnumerator WrongChoice()
@@ -134,7 +110,5 @@ public class Tarea4 : MonoBehaviour
             wrongMessage.SetActive(false);
 
         canChoose = true;
-
-        Debug.Log("DESBLOQUEADO");
     }
 }
