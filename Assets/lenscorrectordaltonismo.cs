@@ -4,38 +4,52 @@ public class LensCorrectoDaltonismo : MonoBehaviour
 {
     public bool esCorrecto = false;
     public DaltonismoManager daltonismoManager;
-    public Transform jugador;
-    public float distanciaActivacion = 10f;
 
-    private bool yaActivado = false;
+    [Header("Mensajes")]
+    public GameObject cartelCorrecto;
+    public GameObject cartelIncorrecto;
 
-    void Update()
+    [Header("Sonidos")]
+    public AudioClip sonidoCorrecto;
+    public AudioClip sonidoIncorrecto;
+
+    private AudioSource audioSource;
+
+    void Awake()
     {
-        Debug.Log("Update corriendo en: " + gameObject.name);
+        audioSource = GetComponent<AudioSource>();
 
-        if (jugador == null)
+        if (audioSource == null)
+            Debug.LogWarning("No hay AudioSource en " + gameObject.name);
+    }
+
+    public void Seleccionar()
+    {
+        if (daltonismoManager == null)
         {
-            Debug.Log("JUGADOR ES NULL");
+            Debug.LogWarning("Falta asignar DaltonismoManager en " + gameObject.name);
             return;
         }
 
-        float distancia = Vector3.Distance(transform.position, jugador.position);
-        Debug.Log("Distancia a " + gameObject.name + ": " + distancia);
-
-        if (distancia < distanciaActivacion && !yaActivado)
+        if (esCorrecto)
         {
-            yaActivado = true;
-            Debug.Log("ACTIVADO: " + gameObject.name);
+            daltonismoManager.LenteCorrecto();
 
-            if (esCorrecto)
-                daltonismoManager.LenteCorrecto();
-            else
-                daltonismoManager.LenteIncorrecto();
+            if (cartelCorrecto != null)
+                cartelCorrecto.SetActive(true);
+
+            if (audioSource != null && sonidoCorrecto != null)
+                audioSource.PlayOneShot(sonidoCorrecto);
         }
-
-        if (distancia > distanciaActivacion && yaActivado)
+        else
         {
-            yaActivado = false;
+            daltonismoManager.LenteIncorrecto();
+
+            if (cartelIncorrecto != null)
+                cartelIncorrecto.SetActive(true);
+
+            if (audioSource != null && sonidoIncorrecto != null)
+                audioSource.PlayOneShot(sonidoIncorrecto);
         }
     }
 }
