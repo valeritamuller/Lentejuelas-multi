@@ -4,48 +4,33 @@ using UnityEngine.Rendering.Universal;
 
 public class Miopia : MonoBehaviour
 {
-    [Header("Post Processing")]
-    public Volume postProcessingVolume;
-    public float bloomIntensidad = 15f;
-    public float vignetteIntensidad = 0f;
+    public Volume globalVolume;
+    private DepthOfField dof;
 
-    [Header("Distancia")]
-    public Transform jugador; // Arrastrás el XR Origin (VR)
-    public float distanciaActivacion = 10f;
-
-    private Bloom bloom;
-    private Vignette vignette;
-    private bool activado = false;
-
-    private void Awake()
+    void Start()
     {
-        if (postProcessingVolume != null)
-        {
-            if (postProcessingVolume.profile.TryGet<Bloom>(out bloom))
-                bloom.intensity.value = 0f;
+        globalVolume.profile.TryGet(out dof);
 
-            if (postProcessingVolume.profile.TryGet<Vignette>(out vignette))
-                vignette.intensity.value = 0f;
+        if (dof != null)
+        {
+            dof.active = true;
+            dof.gaussianStart.value = 50f;
+            dof.gaussianEnd.value = 100f;
+            dof.gaussianMaxRadius.value = 0f;
         }
     }
 
-    private void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        if (activado || jugador == null) return;
+        Debug.Log("ZONA MIOPIA por: " + other.name);
 
-        float distancia = Vector3.Distance(transform.position, jugador.position);
+        if (!other.CompareTag("MainCamera")) return;
 
-        if (distancia < distanciaActivacion)
+        if (dof != null)
         {
-            activado = true;
-
-            if (bloom != null)
-                bloom.intensity.value = bloomIntensidad;
-
-            if (vignette != null)
-                vignette.intensity.value = vignetteIntensidad;
-
-            Debug.Log("BLUR ACTIVADO - distancia: " + distancia);
+            dof.gaussianStart.value = 1f;
+            dof.gaussianEnd.value = 8f;
+            dof.gaussianMaxRadius.value = 0.7f;
         }
     }
 }
