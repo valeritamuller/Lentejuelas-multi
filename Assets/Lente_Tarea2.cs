@@ -33,6 +33,8 @@ public class LenteTarea2 : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("TRIGGER TAREA 2: " + other.gameObject.name + " tag: " + other.tag);
+
         if (!other.CompareTag("Player") && !other.CompareTag("MainCamera"))
             return;
 
@@ -40,13 +42,9 @@ public class LenteTarea2 : MonoBehaviour
             return;
 
         if (isCorrectOption)
-        {
             Correcto();
-        }
         else
-        {
             StartCoroutine(Incorrecto());
-        }
     }
 
     private void Correcto()
