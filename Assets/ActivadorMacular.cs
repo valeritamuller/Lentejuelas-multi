@@ -9,6 +9,12 @@ public class ActivadorMacular : MonoBehaviour
 
     private bool activado = false;
 
+    void Start()
+    {
+        if (manchaMacular != null)
+            manchaMacular.SetActive(false);
+    }
+
     void Update()
     {
         if (activado) return;
@@ -19,6 +25,7 @@ public class ActivadorMacular : MonoBehaviour
         if (distancia < distanciaActivacion)
         {
             activado = true;
+
             if (manchaMacular != null)
                 manchaMacular.SetActive(true);
         }

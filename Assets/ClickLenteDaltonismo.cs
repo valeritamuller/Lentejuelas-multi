@@ -8,8 +8,6 @@ public class ClickLenteDaltonismo : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Hice click");
-
             Ray rayo = Camera.main.ScreenPointToRay(
                 new Vector3(Screen.width / 2f, Screen.height / 2f, 0f)
             );
@@ -18,16 +16,39 @@ public class ClickLenteDaltonismo : MonoBehaviour
             {
                 Debug.Log("Le pegué a: " + hit.collider.name);
 
-                LensCorrectoDaltonismo lente = hit.collider.GetComponent<LensCorrectoDaltonismo>();
+                LensCorrectoMiopia miopia = hit.collider.GetComponentInParent<LensCorrectoMiopia>();
+                if (miopia != null)
+                {
+                    miopia.Seleccionar();
+                    return;
+                }
 
-                if (lente != null)
-                    lente.Seleccionar();
-                else
-                    Debug.Log("Ese objeto no tiene LensCorrectoDaltonismo");
+                LensCorrectoDaltonismo daltonismo = hit.collider.GetComponentInParent<LensCorrectoDaltonismo>();
+                if (daltonismo != null)
+                {
+                    daltonismo.Seleccionar();
+                    return;
+                }
+
+                LensCorrectoAstigmatismo astigmatismo = hit.collider.GetComponentInParent<LensCorrectoAstigmatismo>();
+                if (astigmatismo != null)
+                {
+                    astigmatismo.Seleccionar();
+                    return;
+                }
+
+                LensCorrectoDegeneracion degeneracion = hit.collider.GetComponentInParent<LensCorrectoDegeneracion>();
+                if (degeneracion != null)
+                {
+                    degeneracion.Seleccionar();
+                    return;
+                }
+
+                Debug.Log("Ese objeto no tiene script de lente.");
             }
             else
             {
-                Debug.Log("No le pegué a nada");
+                Debug.Log("No le pegué a nada.");
             }
         }
     }

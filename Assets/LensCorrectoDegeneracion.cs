@@ -1,9 +1,10 @@
 using UnityEngine;
 
-public class LensCorrectoDaltonismo : MonoBehaviour
+public class LensCorrectoDegeneracion : MonoBehaviour
 {
     public bool esCorrecto = false;
-    public DaltonismoManager daltonismoManager;
+
+    public GameObject mancha;
 
     [Header("Mensajes")]
     public GameObject cartelCorrecto;
@@ -18,22 +19,14 @@ public class LensCorrectoDaltonismo : MonoBehaviour
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-
-        if (audioSource == null)
-            Debug.LogWarning("No hay AudioSource en " + gameObject.name);
     }
 
     public void Seleccionar()
     {
-        if (daltonismoManager == null)
-        {
-            Debug.LogWarning("Falta asignar DaltonismoManager en " + gameObject.name);
-            return;
-        }
-
         if (esCorrecto)
         {
-            daltonismoManager.LenteCorrecto();
+            if (mancha != null)
+                mancha.SetActive(false);
 
             if (cartelCorrecto != null)
             {
@@ -46,8 +39,6 @@ public class LensCorrectoDaltonismo : MonoBehaviour
         }
         else
         {
-            daltonismoManager.LenteIncorrecto();
-
             if (cartelIncorrecto != null)
             {
                 cartelIncorrecto.SetActive(true);
