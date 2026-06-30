@@ -19774,7 +19774,7 @@ Transform:
   m_GameObject: {fileID: 1485401891}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 45.3, y: -0.3, z: 48.4}
+  m_LocalPosition: {x: 45.3, y: 2, z: 48.4}
   m_LocalScale: {x: 200, y: 200, z: 200}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -20533,7 +20533,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LensOptionMacular
   isCorrectOption: 0
   manchaMacular: {fileID: 0}
-  jugador: {fileID: 1367451156}
+  jugador: {fileID: 0}
   zonaTarea: {fileID: 0}
   distanciaActivacion: 10
   wrongMessage: {fileID: 0}

@@ -21,6 +21,7 @@ public class ActivadorMacular : MonoBehaviour
         if (jugador == null || zonaTarea == null) return;
 
         float distancia = Vector3.Distance(jugador.position, zonaTarea.position);
+        Debug.Log("Distancia macular: " + distancia);
 
         if (distancia < distanciaActivacion)
         {
@@ -28,6 +29,8 @@ public class ActivadorMacular : MonoBehaviour
 
             if (manchaMacular != null)
                 manchaMacular.SetActive(true);
+
+            Debug.Log("MANCHA ACTIVADA");
         }
     }
 }
