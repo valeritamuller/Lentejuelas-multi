@@ -19,6 +19,9 @@ public class LensCorrectoMiopia : MonoBehaviour
     private AudioSource audioSource;
     private DepthOfField dof;
 
+    // Guarda cuál fue la última opción seleccionada
+    private static LensCorrectoMiopia ultimaSeleccion;
+
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -29,6 +32,18 @@ public class LensCorrectoMiopia : MonoBehaviour
 
     public void Seleccionar()
     {
+        // Cancela el temporizador de la selección anterior
+        if (ultimaSeleccion != null)
+        {
+            ultimaSeleccion.CancelInvoke();
+            ultimaSeleccion.OcultarTodosLosCarteles();
+        }
+
+        ultimaSeleccion = this;
+
+        // Evita que los dos mensajes se vean al mismo tiempo
+        OcultarTodosLosCarteles();
+
         if (esCorrecto)
         {
             if (dof != null)
@@ -60,13 +75,22 @@ public class LensCorrectoMiopia : MonoBehaviour
         }
     }
 
-    void OcultarCartelCorrecto()
+    private void OcultarTodosLosCarteles()
+    {
+        if (cartelCorrecto != null)
+            cartelCorrecto.SetActive(false);
+
+        if (cartelIncorrecto != null)
+            cartelIncorrecto.SetActive(false);
+    }
+
+    private void OcultarCartelCorrecto()
     {
         if (cartelCorrecto != null)
             cartelCorrecto.SetActive(false);
     }
 
-    void OcultarCartelIncorrecto()
+    private void OcultarCartelIncorrecto()
     {
         if (cartelIncorrecto != null)
             cartelIncorrecto.SetActive(false);

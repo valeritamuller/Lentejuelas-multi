@@ -6,13 +6,18 @@ public class LensCorrectoAstigmatismo : MonoBehaviour
     public bool esCorrecto = false;
     public Volume globalVolume;
 
+    [Header("Mensajes")]
     public GameObject cartelCorrecto;
     public GameObject cartelIncorrecto;
 
+    [Header("Sonidos")]
     public AudioClip sonidoCorrecto;
     public AudioClip sonidoIncorrecto;
 
     private AudioSource audioSource;
+
+    // Guarda la última lente seleccionada
+    private static LensCorrectoAstigmatismo ultimaSeleccion;
 
     void Awake()
     {
@@ -21,6 +26,18 @@ public class LensCorrectoAstigmatismo : MonoBehaviour
 
     public void Seleccionar()
     {
+        // Cancela el temporizador anterior y oculta el cartel que estaba visible
+        if (ultimaSeleccion != null)
+        {
+            ultimaSeleccion.CancelInvoke();
+            ultimaSeleccion.OcultarTodosLosCarteles();
+        }
+
+        ultimaSeleccion = this;
+
+        // Por seguridad, oculta ambos carteles antes de mostrar el nuevo
+        OcultarTodosLosCarteles();
+
         if (esCorrecto)
         {
             if (globalVolume != null)
@@ -48,13 +65,22 @@ public class LensCorrectoAstigmatismo : MonoBehaviour
         }
     }
 
-    void OcultarCartelCorrecto()
+    private void OcultarTodosLosCarteles()
+    {
+        if (cartelCorrecto != null)
+            cartelCorrecto.SetActive(false);
+
+        if (cartelIncorrecto != null)
+            cartelIncorrecto.SetActive(false);
+    }
+
+    private void OcultarCartelCorrecto()
     {
         if (cartelCorrecto != null)
             cartelCorrecto.SetActive(false);
     }
 
-    void OcultarCartelIncorrecto()
+    private void OcultarCartelIncorrecto()
     {
         if (cartelIncorrecto != null)
             cartelIncorrecto.SetActive(false);

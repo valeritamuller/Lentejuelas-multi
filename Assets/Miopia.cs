@@ -14,6 +14,8 @@ public class Miopia : MonoBehaviour
         if (dof != null)
         {
             dof.active = true;
+
+            // Visión normal
             dof.gaussianStart.value = 50f;
             dof.gaussianEnd.value = 100f;
             dof.gaussianMaxRadius.value = 0f;
@@ -28,9 +30,10 @@ public class Miopia : MonoBehaviour
 
         if (dof != null)
         {
-            dof.gaussianStart.value = 1f;
-            dof.gaussianEnd.value = 8f;
-            dof.gaussianMaxRadius.value = 0.7f;
+            // Miopía muy exagerada
+            dof.gaussianStart.value = 0f;
+dof.gaussianEnd.value = 0.5f;
+dof.gaussianMaxRadius.value = 2f;
         }
     }
 }

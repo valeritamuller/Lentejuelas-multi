@@ -15,6 +15,9 @@ public class LensCorrectoDaltonismo : MonoBehaviour
 
     private AudioSource audioSource;
 
+    // Guarda la última opción seleccionada
+    private static LensCorrectoDaltonismo ultimaSeleccion;
+
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -30,6 +33,18 @@ public class LensCorrectoDaltonismo : MonoBehaviour
             Debug.LogWarning("Falta asignar DaltonismoManager en " + gameObject.name);
             return;
         }
+
+        // Oculta el mensaje anterior y cancela su temporizador
+        if (ultimaSeleccion != null)
+        {
+            ultimaSeleccion.CancelInvoke();
+            ultimaSeleccion.OcultarTodosLosCarteles();
+        }
+
+        ultimaSeleccion = this;
+
+        // Evita que los dos carteles estén visibles juntos
+        OcultarTodosLosCarteles();
 
         if (esCorrecto)
         {
@@ -59,13 +74,22 @@ public class LensCorrectoDaltonismo : MonoBehaviour
         }
     }
 
-    void OcultarCartelCorrecto()
+    private void OcultarTodosLosCarteles()
+    {
+        if (cartelCorrecto != null)
+            cartelCorrecto.SetActive(false);
+
+        if (cartelIncorrecto != null)
+            cartelIncorrecto.SetActive(false);
+    }
+
+    private void OcultarCartelCorrecto()
     {
         if (cartelCorrecto != null)
             cartelCorrecto.SetActive(false);
     }
 
-    void OcultarCartelIncorrecto()
+    private void OcultarCartelIncorrecto()
     {
         if (cartelIncorrecto != null)
             cartelIncorrecto.SetActive(false);

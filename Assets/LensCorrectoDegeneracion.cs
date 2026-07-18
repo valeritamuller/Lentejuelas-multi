@@ -16,6 +16,9 @@ public class LensCorrectoDegeneracion : MonoBehaviour
 
     private AudioSource audioSource;
 
+    // Guarda la última opción seleccionada
+    private static LensCorrectoDegeneracion ultimaSeleccion;
+
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -23,6 +26,18 @@ public class LensCorrectoDegeneracion : MonoBehaviour
 
     public void Seleccionar()
     {
+        // Cancela el temporizador y oculta el cartel de la opción anterior
+        if (ultimaSeleccion != null)
+        {
+            ultimaSeleccion.CancelInvoke();
+            ultimaSeleccion.OcultarTodosLosCarteles();
+        }
+
+        ultimaSeleccion = this;
+
+        // Evita que los dos carteles estén visibles juntos
+        OcultarTodosLosCarteles();
+
         if (esCorrecto)
         {
             if (mancha != null)
@@ -50,13 +65,22 @@ public class LensCorrectoDegeneracion : MonoBehaviour
         }
     }
 
-    void OcultarCartelCorrecto()
+    private void OcultarTodosLosCarteles()
+    {
+        if (cartelCorrecto != null)
+            cartelCorrecto.SetActive(false);
+
+        if (cartelIncorrecto != null)
+            cartelIncorrecto.SetActive(false);
+    }
+
+    private void OcultarCartelCorrecto()
     {
         if (cartelCorrecto != null)
             cartelCorrecto.SetActive(false);
     }
 
-    void OcultarCartelIncorrecto()
+    private void OcultarCartelIncorrecto()
     {
         if (cartelIncorrecto != null)
             cartelIncorrecto.SetActive(false);
